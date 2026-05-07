@@ -103,7 +103,7 @@ class JudgyReachyNoPhone(ReachyMiniApp):
         self.detection_fps = 0
         self.last_person_centering_time = 0
         self.person_centering_yaw = 0.0
-        self.person_centering_z = 0.0
+        self.person_centering_pitch = 0.0
         self.person_centering_target = None
         self.person_centering_pause_until = 0.0
         self.person_centering_stable_frames = 0
@@ -183,6 +183,7 @@ class JudgyReachyNoPhone(ReachyMiniApp):
 
         x_offset = float(self.person_centering_target["x_offset"])
         y_offset = float(self.person_centering_target["y_offset"])
+        target_source = target.get("source", "person")
         drift = max(abs(x_offset), abs(y_offset))
         if drift < self.config.PERSON_CENTERING_DEADBAND:
             self._reset_person_centering_observation()
@@ -209,21 +210,32 @@ class JudgyReachyNoPhone(ReachyMiniApp):
             max_yaw,
         ))
 
-        max_z = self.config.PERSON_CENTERING_MAX_HEAD_Z_MM
-        target_z = float(np.clip(-y_offset * max_z, -max_z, max_z))
-        self.person_centering_z = (
-            (1.0 - smoothing) * self.person_centering_z
-            + smoothing * target_z
+        max_pitch = float(np.deg2rad(self.config.PERSON_CENTERING_MAX_HEAD_PITCH_DEG))
+        target_pitch = float(np.clip(
+            y_offset * self.config.PERSON_CENTERING_PITCH_GAIN,
+            -max_pitch,
+            max_pitch,
+        ))
+        self.person_centering_pitch = (
+            (1.0 - smoothing) * self.person_centering_pitch
+            + smoothing * target_pitch
         )
-        head = create_head_pose(z=self.person_centering_z, roll=0, mm=True, degrees=True)
+        head = create_head_pose(
+            roll=0,
+            pitch=self.person_centering_pitch,
+            yaw=self.person_centering_yaw,
+            degrees=False,
+        )
 
         logger.debug(
-            "Recentering on person: x=%.2f y=%.2f yaw=%.1f step=%.1f z=%.1f",
+            "Recentering on %s: x=%.2f y=%.2f body_yaw=%.1f step=%.1f head_yaw=%.1f head_pitch=%.1f",
+            target_source,
             x_offset,
             y_offset,
             np.rad2deg(self.person_centering_yaw),
             np.rad2deg(yaw_step),
-            self.person_centering_z,
+            np.rad2deg(self.person_centering_yaw),
+            np.rad2deg(self.person_centering_pitch),
         )
         reachy.goto_target(
             head=head,
@@ -746,7 +758,7 @@ class JudgyReachyNoPhone(ReachyMiniApp):
                 self.is_monitoring = True
                 self.session_start = time.time()
                 self.person_centering_yaw = 0.0
-                self.person_centering_z = 0.0
+                self.person_centering_pitch = 0.0
                 self.person_centering_target = None
                 self.person_centering_pause_until = 0.0
                 self.person_centering_stable_frames = 0

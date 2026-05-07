@@ -41,11 +41,24 @@ class PhoneDetector:
         # Tracking persistence (like demo.js)
         self.last_phone_box: Optional[Dict[str, Any]] = None
         self.last_person_box: Optional[Dict[str, Any]] = None
+        self.last_face_box: Optional[Dict[str, Any]] = None
         self.last_person_seen_time = 0.0
+        self.last_face_seen_time = 0.0
         self.frames_without_detection = 0
 
         # For visualization
         self.last_detections = []
+        self.last_face_boxes = []
+
+        try:
+            cascade_path = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+            self.face_cascade = cv2.CascadeClassifier(cascade_path)
+            if self.face_cascade.empty():
+                self.face_cascade = None
+                logger.warning("OpenCV face cascade failed to load")
+        except Exception as e:
+            self.face_cascade = None
+            logger.warning(f"OpenCV face cascade unavailable: {e}")
 
         # Loading state (like demo.js)
         self.loading_status = "idle"  # idle, loading, ready, error
@@ -249,11 +262,69 @@ class PhoneDetector:
                 self.last_person_box = best_person
                 self.last_person_seen_time = time.time()
 
+            self._update_face_tracking(frame, best_person)
+
             return new_detections
 
         except Exception as e:
             logger.debug(f"YOLO tracking error: {e}")
             return []
+
+    def _update_face_tracking(self, frame: np.ndarray, person_box: Optional[Dict[str, Any]] = None):
+        """Track faces with OpenCV and remember the largest recent face."""
+        self.last_face_boxes = []
+        if self.face_cascade is None:
+            return
+
+        try:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            search_regions = [(0, 0, frame.shape[1], frame.shape[0])]
+
+            if person_box:
+                person_h = max(1, person_box["y2"] - person_box["y1"])
+                person_w = max(1, person_box["x2"] - person_box["x1"])
+                x1 = max(0, person_box["x1"] - int(person_w * 0.10))
+                y1 = max(0, person_box["y1"] - int(person_h * 0.05))
+                x2 = min(frame.shape[1], person_box["x2"] + int(person_w * 0.10))
+                y2 = min(frame.shape[0], person_box["y1"] + int(person_h * 0.55))
+                if x2 > x1 and y2 > y1:
+                    search_regions.insert(0, (x1, y1, x2, y2))
+
+            best_face = None
+            best_area = 0
+            for rx1, ry1, rx2, ry2 in search_regions:
+                roi = gray[ry1:ry2, rx1:rx2]
+                if roi.size == 0:
+                    continue
+
+                faces = self.face_cascade.detectMultiScale(
+                    roi,
+                    scaleFactor=1.1,
+                    minNeighbors=5,
+                    minSize=(28, 28),
+                )
+                for x, y, w, h in faces:
+                    face = {
+                        "x1": int(rx1 + x),
+                        "y1": int(ry1 + y),
+                        "x2": int(rx1 + x + w),
+                        "y2": int(ry1 + y + h),
+                        "confidence": 1.0,
+                        "class_name": "face",
+                        "track_id": None,
+                    }
+                    self.last_face_boxes.append(face)
+                    area = int(w * h)
+                    if area > best_area:
+                        best_area = area
+                        best_face = face
+
+            if best_face:
+                self.last_face_box = best_face
+                self.last_face_seen_time = time.time()
+
+        except Exception as e:
+            logger.debug(f"Face tracking error: {e}")
 
     def draw_detections(self, frame: np.ndarray) -> np.ndarray:
         """Draw detection boxes on frame."""
@@ -263,6 +334,13 @@ class PhoneDetector:
         frame_with_boxes = frame.copy()
 
         try:
+            for face in self.last_face_boxes:
+                x1, y1, x2, y2 = face["x1"], face["y1"], face["x2"], face["y2"]
+                color = (255, 80, 255)
+                cv2.rectangle(frame_with_boxes, (x1, y1), (x2, y2), color, 2)
+                cv2.putText(frame_with_boxes, "face", (x1, y1 - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+
             for result in self.last_detections:
                 for box in result.boxes:
                     cls = int(box.cls)
@@ -288,23 +366,37 @@ class PhoneDetector:
         return frame_with_boxes
 
     def get_person_target(self, frame_shape, max_age: float = 1.0) -> Optional[dict]:
-        """Return the largest recent person as normalized frame offsets."""
-        if not self.last_person_box or time.time() - self.last_person_seen_time > max_age:
-            return None
-
+        """Return the best recent face/person target as normalized frame offsets."""
         height, width = frame_shape[:2]
         if width <= 0 or height <= 0:
             return None
 
+        if self.last_face_box and time.time() - self.last_face_seen_time <= max_age:
+            box = self.last_face_box
+            center_x = (box["x1"] + box["x2"]) / 2
+            center_y = (box["y1"] + box["y2"]) / 2
+            return {
+                "x_offset": (center_x - width / 2) / (width / 2),
+                "y_offset": (center_y - height / 2) / (height / 2),
+                "confidence": box["confidence"],
+                "track_id": box["track_id"],
+                "source": "face",
+            }
+
+        if not self.last_person_box or time.time() - self.last_person_seen_time > max_age:
+            return None
+
         box = self.last_person_box
         center_x = (box["x1"] + box["x2"]) / 2
-        center_y = (box["y1"] + box["y2"]) / 2
+        person_h = max(1, box["y2"] - box["y1"])
+        center_y = box["y1"] + person_h * 0.18
 
         return {
             "x_offset": (center_x - width / 2) / (width / 2),
             "y_offset": (center_y - height / 2) / (height / 2),
             "confidence": box["confidence"],
             "track_id": box["track_id"],
+            "source": "person",
         }
 
     def process_frame(
@@ -386,7 +478,10 @@ class PhoneDetector:
         self.consecutive_no_phone = 0
         self.last_phone_box = None
         self.last_person_box = None
+        self.last_face_box = None
         self.last_person_seen_time = 0.0
+        self.last_face_seen_time = 0.0
+        self.last_face_boxes = []
         self.frames_without_detection = 0
         self.last_reaction_time = 0
 

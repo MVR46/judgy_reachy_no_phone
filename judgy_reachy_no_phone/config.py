@@ -23,7 +23,8 @@ class Config:
     PERSON_CENTERING_MAX_YAW_STEP_DEG: float = 10.0
     PERSON_CENTERING_YAW_GAIN: float = 0.45
     PERSON_CENTERING_SMOOTHING: float = 0.35
-    PERSON_CENTERING_MAX_HEAD_Z_MM: float = 8.0
+    PERSON_CENTERING_MAX_HEAD_PITCH_DEG: float = 18.0
+    PERSON_CENTERING_PITCH_GAIN: float = 0.35
 
     # API Keys (optional - leave empty for free defaults)
     GROQ_API_KEY: str = ""             # Get free at console.groq.com
