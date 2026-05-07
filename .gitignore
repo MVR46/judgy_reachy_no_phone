@@ -1,0 +1,41 @@
+# Python caches/build output
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+htmlcov/
+.coverage
+.coverage.*
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments and local tool state
+.venv/
+.venv-*/
+venv/
+env/
+.env
+.env.*
+
+# ML model/runtime artifacts
+*.pt
+*.pth
+*.onnx
+*.engine
+*.torchscript
+runs/
+
+# Generated app/runtime files
+*.wav
+*.mp3
+*.tmp
+*.log
+
+# OS/editor files
+.DS_Store
+.idea/
+.vscode/

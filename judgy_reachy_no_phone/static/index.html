@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Judgy Reachy No Phone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="top-header">
+        <div class="header-left">
+            <div class="header-icons">
+                <span class="header-icon">📱</span>
+                <span class="header-icon">🤖</span>
+            </div>
+            <div class="header-title">
+                <h1>Judgy Reachy <span class="accent">No Phone!</span></h1>
+                <p class="subtitle">Get off your phone!</p>
+            </div>
+        </div>
+        <button class="settings-btn" id="settings-btn">⚙️</button>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Column -->
+        <div class="left-column">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    <span id="status-text">Not Monitoring</span>
+                </div>
+                <div class="tech-badge" id="mode-text">Pre-written lines → Edge TTS</div>
+                <div class="mode-badge">
+                    Mode: <span id="mode-name">Mixtape</span>
+                </div>
+            </div>
+
+            <!-- Camera View -->
+            <div class="camera-container">
+                <div class="camera-frame">
+                    <div class="standby-badge">
+                        <span class="standby-dot"></span>
+                        <span>Standby</span>
+                    </div>
+                    <img id="video-feed" src="" alt="Camera feed">
+                    <div id="video-placeholder" class="video-placeholder">
+                        <svg class="camera-off-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                        <div class="camera-status" id="camera-status">Camera Inactive</div>
+                        <div class="camera-message" id="camera-message">Waiting for camera connection...</div>
+                    </div>
+
+                    <!-- Loading Overlay (like demo.js) -->
+                    <div id="loader-overlay" class="loader-overlay">
+                        <div class="spinner"></div>
+                        <p id="loader-text" class="loader-text">Initializing...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Buttons -->
+            <div class="controls">
+                <button id="toggle-btn" class="btn btn-start">
+                    <span class="btn-icon">▶</span>
+                    <span class="btn-text">Start Monitoring</span>
+                </button>
+                <button id="test-btn" class="btn btn-test">⚡ Test</button>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="stats-row">
+                <div class="stat-card red">
+                    <div class="stat-value" id="phone-count">0</div>
+                    <div class="stat-label">BUSTED BY REACHY</div>
+                </div>
+                <div class="stat-card blue">
+                    <div class="stat-value" id="current-streak">0s</div>
+                    <div class="stat-label">CURRENT STREAK</div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-value" id="longest-streak">0s</div>
+                    <div class="stat-label">LONGEST STREAK</div>
+                </div>
+            </div>
+
+            <!-- Reset Button -->
+            <div class="reset-section" id="reset-section" style="display: none;">
+                <button id="reset-btn" class="btn btn-reset">🔄 Reset Stats</button>
+            </div>
+        </div>
+
+        <!-- Right Column - Personality Selector -->
+        <div class="right-column">
+            <div class="personality-panel">
+                <h2 class="panel-title">🤖 Robot Personality</h2>
+                <p class="panel-subtitle">Choose how the robot judges you</p>
+
+                <!-- API Key Notice -->
+                <div class="api-notice" id="api-notice">
+                    <div class="notice-icon">💡</div>
+                    <div class="notice-text">
+                        <strong>Using Pre-written Lines</strong><br>
+                        <span class="notice-small">Add Groq API key in settings for AI-powered responses</span>
+                    </div>
+                </div>
+
+                <div class="personality-list" id="personality-list">
+                    <!-- Personalities loaded dynamically from config -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="settings-modal" id="settings-modal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2>⚙️ Settings</h2>
+                <button class="close-btn" id="close-settings">✕</button>
+            </div>
+            <div class="settings-body">
+                <div class="form-group">
+                    <label for="groq-key">Groq API Key (optional)</label>
+                    <input type="password" id="groq-key" placeholder="Get free at console.groq.com">
+                </div>
+                <div class="form-group">
+                    <label for="eleven-key">ElevenLabs API Key (optional)</label>
+                    <input type="password" id="eleven-key" placeholder="Get free at elevenlabs.io">
+                </div>
+                <div class="form-group">
+                    <label for="cooldown">Cooldown between shames (seconds): <span id="cooldown-value">10</span></label>
+                    <input type="range" id="cooldown" min="10" max="120" value="10" step="5">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="praise-toggle" checked>
+                        Praise when phone is put down
+                    </label>
+                </div>
+            </div>
+            <div class="settings-footer">
+                <button class="btn btn-done" id="done-settings">✓ Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voice Settings Modal -->
+    <div class="settings-modal" id="voice-settings-modal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2 id="voice-settings-title">Voice Settings</h2>
+                <button class="close-btn" id="close-voice-settings">✕</button>
+            </div>
+            <div class="settings-body">
+                <div class="form-group">
+                    <label for="voice-edge">Edge TTS Voice (free)</label>
+                    <input type="text" id="voice-edge" placeholder="Leave empty for default">
+                    <small class="input-hint" id="voice-edge-default"></small>
+                </div>
+                <div class="form-group">
+                    <label for="voice-eleven">ElevenLabs Voice ID</label>
+                    <input type="text" id="voice-eleven" placeholder="Leave empty for default">
+                    <small class="input-hint" id="voice-eleven-default"></small>
+                </div>
+            </div>
+            <div class="settings-footer">
+                <button class="btn btn-done" id="save-voice-settings">✓ Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/main.js"></script>
+</body>
+</html>

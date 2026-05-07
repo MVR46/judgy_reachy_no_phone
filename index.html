@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Judgy Reachy No Phone - Reachy Mini App</title>
+	<meta name="description" content="A Reachy Mini app that detects when you pick up your phone and shames you with snarky comments using AI vision and text-to-speech.">
+	<link rel="stylesheet" href="style.css" />
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📱</text></svg>">
+</head>
+
+<body>
+	<!-- Header -->
+	<header class="header">
+		<div class="header-content">
+			<div class="logo">
+				<span class="logo-icon">📱</span>
+				<span class="logo-text">Judgy Reachy</span>
+			</div>
+
+			<nav class="nav">
+				<a href="#demo" class="nav-link" id="nav-demo">Try Demo</a>
+				<a href="#setup" class="nav-link" id="nav-setup">Quick Setup</a>
+				<a href="#config" class="nav-link" id="nav-config">Config</a>
+				<a href="#personalities" class="nav-link" id="nav-personalities">Personalities</a>
+				<a href="#features" class="nav-link" id="nav-features">Features</a>
+			</nav>
+
+			<a href="https://github.com/yaseminozkut/judgy_reachy_no_phone" class="github-btn" target="_blank">
+				<svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+					<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+				</svg>
+				GitHub
+			</a>
+		</div>
+	</header>
+
+	<!-- Mode toggle bar -->
+	<div class="mode-toggle-bar">
+		<div class="mode-toggle">
+			<button class="toggle-option active" id="toggle-info">Info</button>
+			<button class="toggle-option" id="toggle-robot">🤖 Connect Robot</button>
+		</div>
+	</div>
+
+	<div id="info-view">
+	<!-- Hero Section -->
+	<section class="hero-section">
+		<div class="container">
+			<div class="hero-grid">
+				<div class="hero-left">
+					<div class="hero-label">Reachy Mini App</div>
+					<h1 class="hero-title">Get off <span>your phone!</span></h1>
+					<p class="hero-description">
+						Your robot companion catches you scrolling with AI vision. Shames you back to productivity. Brutal, funny, pure chaos.
+					</p>
+					<div class="hero-tags">
+						<span class="tag">⚡ Real-time Detection</span>
+						<span class="tag">👾 LLM</span>
+						<span class="tag">🔈 TTS</span>
+						<span class="tag">😌 9 Personalities</span>
+						<span class="tag">🔒 100% Local or API</span>
+					</div>
+					<div class="hero-tech" style="margin-top: 1.5rem;">
+						<div class="hero-tech-stack">
+							<span class="tech-pill">YOLO26m</span>
+							<span class="tech-pill">NVIDIA TensorRT</span>
+							<span class="tech-pill">OpenCV</span>
+							<span class="tech-pill">Groq (Llama 3.1)</span>
+							<span class="tech-pill">Edge TTS</span>
+							<span class="tech-pill">ElevenLabs</span>
+						</div>
+					</div>
+
+					<div class="hero-cta">
+						<a href="#demo" class="cta-button">🎮 Try Demo in Browser</a>
+						<a href="#setup" id="download-btn" class="cta-button-secondary">📥 Download for Robot</a>
+						<a href="https://github.com/yaseminozkut/judgy_reachy_no_phone?tab=readme-ov-file#-judgy-reachy-no-phone-" class="cta-button-secondary" target="_blank">📖 Full Documentation</a>
+					</div>
+
+				</div>
+
+				<div class="hero-right">
+					<div id="demo-preview" style="border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); margin-top: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+						<img src="quick_demo.gif" alt="Judgy Reachy demo - phone detection in action" style="width: 100%; display: block;">
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+	</section>
+
+	<!-- Try Demo Section -->
+	<section id="demo" class="demo-section">
+		<div class="container">
+			<h2 class="section-title">Interactive Browser Demo</h2>
+			<p class="section-subtitle">Just a quick teaser demo! If you haven't tried Reachy Mini yet, this is a fun way to get a taste of what it can do. Hope it makes you smile :) and sparks your curiosity to try the full real simulation/robot. For the complete experience with expressive robot animations, head movements, and all 9 personalities, download this app to your Reachy Mini robot!</p>
+
+			<!-- Mobile Alternative (shown only on mobile) -->
+			<div id="mobile-alternative" class="mobile-alternative">
+				<h4 class="mobile-hero-title">📱🤔</h4>
+				<h4 class="mobile-hero-title">Wait a second...</h4>
+				<p class="mobile-hero-text">
+					You're on your phone right now! How can we detect you picking up your phone... when you're already holding it? :)
+				</p>
+				<p class="mobile-hero-subtext">
+					This interactive demo needs a laptop browser (Chrome/Edge) to work properly. Mobile browsers aren't optimized for WebGPU real-time inference yet.
+				</p>
+
+				<!-- Like reminder for contest -->
+				<div class="like-reminder">
+					<div class="like-icon">❤️</div>
+					<div class="like-text">
+						<strong>Enjoying this?</strong> Click the ❤️ at the top to like this Space!
+					</div>
+				</div>
+
+				<div class="laptop-hint">💻 Open on your laptop to try the live interactive demo!</div>
+			</div>
+
+			<div class="demo-grid" id="demo-grid">
+				<!-- Camera with Robot PiP -->
+				<div class="camera-column">
+					<div class="video-wrapper">
+						<video id="webcam" autoplay playsinline muted></video>
+						<canvas id="canvas"></canvas>
+
+						<!-- Robot PiP Overlay -->
+						<div class="robot-pip">
+							<div class="robot-bg-pip">
+								<object type="image/svg+xml" data="reachy-happy.svg" class="robot-svg-pip" id="robot-svg">
+									Reachy Robot
+								</object>
+							</div>
+						</div>
+
+						<!-- Status overlay -->
+						<div class="demo-status">
+							<span id="status-indicator" class="status-dot"></span>
+							<span id="status-text">Click Start to begin</span>
+						</div>
+
+						<!-- FPS counter -->
+						<div class="fps-counter">
+							<span id="fps">0</span> FPS
+						</div>
+
+						<!-- Loader overlay -->
+						<div id="loader" class="loader-overlay">
+							<div class="spinner"></div>
+							<p id="loader-text">Loading AI model...</p>
+						</div>
+					</div>
+
+					<!-- Controls -->
+					<div class="demo-controls">
+						<button id="camera-btn" class="btn-demo btn-secondary">
+							<span id="camera-icon">📹</span>
+							<span id="camera-text">Open Camera</span>
+						</button>
+						<button id="start-btn" class="btn-demo btn-primary" disabled>
+							<span id="btn-icon">▶️</span>
+							<span id="btn-text">Start Detection</span>
+						</button>
+					</div>
+
+					<!-- Response Box (below camera) -->
+					<div id="response-box" class="response-box">
+						<div class="response-label">💬 Latest Emotion:</div>
+						<div id="response-text" class="response-text">Pick up your phone to hear Reachy react!</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Getting Started -->
+	<section id="setup" class="getting-started-section">
+		<div class="container">
+			<div class="section-label">Getting Started</div>
+			<h2 class="section-title">Quick Setup</h2>
+
+			<div class="guide-card">
+				<ol class="guide-list">
+					<li>
+						<strong>Install Reachy Mini SDK</strong> - Follow the <a href="https://github.com/pollen-robotics/reachy_mini/blob/main/docs/source/SDK/installation.md" target="_blank" class="setup-link">installation guide</a>
+					</li>
+					<li>
+						<strong>Install this app</strong> - Via <a href="https://github.com/pollen-robotics/reachy_mini/" target="_blank" class="setup-link">Reachy Mini SDK</a> or <a href="https://github.com/pollen-robotics/reachy-mini-desktop-app" target="_blank" class="setup-link">Desktop App</a>
+					</li>
+					<li>
+						<strong>Start Reachy daemon</strong> - See <a href="https://github.com/pollen-robotics/reachy_mini/blob/main/docs/source/SDK/quickstart.md" target="_blank" class="setup-link">quickstart guide</a> (simulation or real robot)
+					</li>
+					<li>
+						<strong>Launch & open UI</strong> - Start the app and visit <code>http://localhost:8042</code>
+					</li>
+				</ol>
+
+				<!-- Usage Guide -->
+				<h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; margin: 3rem 0 1.5rem; color: var(--coral-light);">Using the App</h3>
+
+				<ol class="guide-list" style="counter-reset: step-counter;">
+					<li>
+						<strong>Choose a personality</strong> - All 9 work immediately with pre-written responses
+					</li>
+					<li>
+						<strong>Add API keys</strong> (optional) - <a href="https://console.groq.com" target="_blank" class="setup-link">Groq</a> for LLM, <a href="https://elevenlabs.io" target="_blank" class="setup-link">ElevenLabs</a> for premium voices
+					</li>
+					<li>
+						<strong>Adjust settings</strong> (optional) - Cooldown time, enable/disable praise mode
+					</li>
+					<li>
+						<strong>Customize voices</strong> (optional) - Custom voice IDs per personality with auto-fallback
+					</li>
+				</ol>
+			</div>
+		</div>
+	</section>
+
+	<!-- Configuration Section -->
+	<section id="config" class="config-section">
+		<div class="container">
+
+			<div class="section-label">Configuration</div>
+			<h2 class="section-title">Fully Customizable for Every Need</h2>
+			<p class="section-subtitle">Choose what fits your setup</p>
+
+			<div class="config-grid">
+				<div class="config-card highlight">
+					<h3>Local Mode (Default)</h3>
+					<p>Complete experience. Zero external dependencies. No limitations.</p>
+					<ul class="config-list">
+						<li>YOLO26n AI detection (runs locally)</li>
+						<li>20+ curated snarky lines</li>
+						<li>Edge TTS voice (unlimited, free forever)</li>
+						<li>All 9 personalities work perfectly</li>
+					</ul>
+				</div>
+
+				<div class="config-card">
+					<h3>API-Enhanced (Optional)</h3>
+					<p>Add dynamic AI and premium voices. Free tiers available, no credit card.</p>
+					<ul class="config-list">
+						<li>Same YOLO26n detection</li>
+						<li>Groq API - Dynamic LLM responses (free tier)</li>
+						<li>ElevenLabs ultra-realistic voices (free tier)</li>
+						<li>Auto-fallback to Edge TTS if needed</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="config-note">
+				<p><strong>💡 About Free Tiers:</strong> Groq and ElevenLabs both offer generous free tiers. With ElevenLabs, you can save up to 3 custom voices from their library to your account. The app comes with pre-selected default voices and automatically falls back to Edge TTS if anything fails. Fully customizable for your needs.</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- Personalities Section -->
+	<section id="personalities" class="personalities-section">
+		<div class="container">
+			<div class="section-label">Personalities</div>
+			<h2 class="section-title">Pick Your Flavor of Shame</h2>
+			<p class="section-subtitle">Nine unique personalities with matched voices and attitudes</p>
+
+			<div class="personalities-grid">
+				<div class="personality-card">
+					<div class="personality-emoji">🤖</div>
+					<h3>Pure Reachy</h3>
+					<p>No speech, pure authentic Reachy emotions from Pollen Robotics library.</p>
+					<div class="personality-tags">
+						<span class="personality-tag">Cute</span>
+						<span class="personality-tag">Emotions</span>
+					</div>
+				</div>
+
+				<div class="personality-card">
+					<div class="personality-emoji">😠</div>
+					<h3>Angry Boss</h3>
+					<p>A furious manager at their absolute limit. Explosive, zero patience.
+					</p>
+					<div class="personality-tags">
+						<span class="personality-tag">Explosive</span>
+						<span class="personality-tag">Commanding</span>
+					</div>
+				</div>
+
+				<div class="personality-card">
+					<div class="personality-emoji">🎭</div>
+					<h3>Sarcastic</h3>
+					<p>Dripping with dry wit. Mock enthusiasm, feigned interest. Peak passive aggression.</p>
+					<div class="personality-tags">
+						<span class="personality-tag">Passive-aggressive</span>
+						<span class="personality-tag">Ironic</span>
+					</div>
+				</div>
+
+				<div class="personality-card">
+					<div class="personality-emoji">😔</div>
+					<h3>Disappointed Parent</h3>
+					<p>Not angry—just deeply let down. Maximum guilt.</p>
+					<div class="personality-tags">
+						<span class="personality-tag">Guilt-inducing</span>
+						<span class="personality-tag">Wounded</span>
+					</div>
+				</div>
+
+				<div class="personality-card">
+					<div class="personality-emoji">💪</div>
+					<h3>Motivational Coach</h3>
+					<p>Intense drill-sergeant who believes in you but won't tolerate weakness.</p>
+					<div class="personality-tags">
+						<span class="personality-tag">High Energy</span>
+						<span class="personality-tag">Tough Love</span>
+					</div>
+				</div>
+
+				<div class="personality-card">
+					<div class="personality-emoji">🤡</div>
+					<h3>Absurdist</h3>
+					<p>Surreal, unexpected, playful.</p>
+					<div class="personality-tags">
+						<span class="personality-tag">Whimsical</span>
+						<span class="personality-tag">Weird</span>
+					</div>
+				</div>
+
+				<div class="personality-card">
+					<div class="personality-emoji">🖥️</div>
+					<h3>Corporate AI</h3>
+					<p>Emotionless robot productivity system.</p>
+					<div class="personality-tags">
+						<span class="personality-tag">Robotic</span>
+						<span class="personality-tag">Clinical</span>
+					</div>
+				</div>
+
+				<div class="personality-card">
+					<div class="personality-emoji">🎩</div>
+					<h3>British Butler</h3>
+					<p>Impeccably polite yet quietly judgmental.</p>
+					<div class="personality-tags">
+						<span class="personality-tag">Formal</span>
+						<span class="personality-tag">Polite</span>
+					</div>
+				</div>
+
+				<div class="personality-card">
+					<div class="personality-emoji">🐣</div>
+					<h3>Chaos Baby</h3>
+					<p>Unpredictable wildcard. Every response is a different random personality!</p>
+					<div class="personality-tags">
+						<span class="personality-tag">Random</span>
+						<span class="personality-tag">Chaotic</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Features Section -->
+	<section id="features" class="features-section">
+		<div class="container">
+			<div class="section-label">Features</div>
+			<h2 class="section-title">Everything You Need</h2>
+			<p class="section-subtitle">Break your phone addiction with AI-powered shame</p>
+
+			<div class="features-grid">
+				<div class="feature-item">
+					<div class="feature-icon-badge">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<circle cx="12" cy="12" r="10"/>
+							<circle cx="12" cy="12" r="4"/>
+							<line x1="21.17" y1="8" x2="12" y2="8"/>
+							<line x1="3.95" y1="6.06" x2="8.54" y2="14"/>
+							<line x1="10.88" y1="21.94" x2="15.46" y2="14"/>
+						</svg>
+					</div>
+					<h3>Real-Time Phone Detection</h3>
+					<p>Powered by YOLO26n. 3-frame confirmation prevents false positives.</p>
+				</div>
+
+				<div class="feature-item">
+					<div class="feature-icon-badge">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+						</svg>
+					</div>
+					<h3>Snarky AI Responses</h3>
+					<p>Curated pre-written or dynamic LLM-generated shame. Escalates with repeat offenses.</p>
+				</div>
+
+				<div class="feature-item">
+					<div class="feature-icon-badge">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<circle cx="12" cy="12" r="10"/>
+							<path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+							<line x1="9" y1="9" x2="9.01" y2="9"/>
+							<line x1="15" y1="9" x2="15.01" y2="9"/>
+						</svg>
+					</div>
+					<h3>Expressive Animations</h3>
+					<p>Robot reacts with emotions and moves.</p>
+				</div>
+
+				<div class="feature-item">
+					<div class="feature-icon-badge">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+							<path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
+						</svg>
+					</div>
+					<h3>Text-to-Speech</h3>
+					<p>Unlimited Edge TTS or limited ultra-realistic ElevenLabs voices. Personalities with matched voice profiles.</p>
+				</div>
+
+				<div class="feature-item">
+					<div class="feature-icon-badge">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M3 3v18h18"/>
+							<path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
+						</svg>
+					</div>
+					<h3>Stats Tracking</h3>
+					<p>Monitor pickup count, current streak, and longest phone-free streak. Track your progress.</p>
+				</div>
+
+				<div class="feature-item">
+					<div class="feature-icon-badge">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<circle cx="12" cy="12" r="3"/>
+							<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+						</svg>
+					</div>
+					<h3>Fully Configurable</h3>
+					<p>Adjust cooldown (10-120s), enable praise mode, switch personalities via intuitive web UI.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Footer -->
+	<footer class="footer">
+		<div class="container">
+			<div class="footer-links">
+				<a href="https://github.com/pollen-robotics" target="_blank">Pollen Robotics</a>
+				<span>•</span>
+				<a href="https://huggingface.co/spaces/pollen-robotics/reachy-mini-landing-page#apps" target="_blank">More Apps</a>
+				<span>•</span>
+				<a href="https://www.pollen-robotics.com/" target="_blank">Get Reachy Mini</a>
+			</div>
+			<p class="footer-text">Open Source • Built for productivity 🤖</p>
+		</div>
+	</footer>
+
+	</div><!-- end info-view -->
+
+	<!-- Robot View -->
+	<div id="robot-view" style="display:none">
+		<div class="container rv-container">
+
+			<!-- State 1: Sign in -->
+			<div id="rv-signin" class="rv-state">
+				<div class="rv-connect-card">
+					<div class="rv-connect-icon">🤖</div>
+					<h2 class="rv-connect-title">Connect your Reachy Mini</h2>
+					<p class="rv-connect-desc">Sign in with Hugging Face to connect your robot and start monitoring</p>
+					<button id="rv-signin-btn" class="cta-button">Sign in with Hugging Face 🤗</button>
+				</div>
+			</div>
+
+			<!-- State 2: Robot picker -->
+			<div id="rv-picker" class="rv-state" style="display:none">
+				<div class="rv-picker-header">
+					<h2 class="rv-picker-title">Select Your Robot</h2>
+					<p class="rv-picker-sub">Your online robots appear below</p>
+				</div>
+				<div id="rv-robot-list" class="rv-robot-list"></div>
+				<button id="rv-connect-btn" class="cta-button" style="margin-top:1.25rem;display:none">Connect →</button>
+			</div>
+
+			<!-- State 3: Monitoring UI -->
+			<div id="rv-monitoring" class="rv-state" style="display:none">
+
+				<!-- Top bar: robot name + gear + disconnect -->
+				<div class="rv-topbar">
+					<div class="rv-topbar-left">
+						<span id="rv-robot-badge" class="rv-badge">🟢 Connected</span>
+					</div>
+					<div class="rv-topbar-right">
+						<button id="rv-settings-btn" class="btn-icon-sm">⚙️</button>
+						<button id="rv-disconnect-btn" class="btn-icon-sm btn-danger-sm">✕ Disconnect</button>
+					</div>
+				</div>
+
+				<!-- Main grid -->
+				<div class="rv-grid">
+
+					<!-- Left column: status + camera + controls + stats -->
+					<div class="rv-camera-col">
+
+						<!-- 3-part status bar (matches original) -->
+						<div class="rv-status-bar">
+							<div class="rv-status-badge">
+								<span id="rv-detect-dot" class="status-dot"></span>
+								<span id="rv-detect-text">Not Monitoring</span>
+							</div>
+							<div id="rv-tech-badge" class="rv-tech-badge">Emotion sounds</div>
+							<div class="rv-mode-badge">Mode: <span id="rv-mode-name">Pure Reachy</span></div>
+						</div>
+
+						<!-- Camera -->
+						<div class="video-wrapper">
+							<video id="rv-video" autoplay playsinline muted></video>
+							<canvas id="rv-canvas"></canvas>
+							<div id="rv-video-placeholder" class="video-placeholder">
+								<svg class="camera-off-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10"/>
+									<line x1="1" y1="1" x2="23" y2="23"/>
+								</svg>
+								<div class="camera-status">Camera Inactive</div>
+								<div class="camera-message">Waiting for robot camera feed…</div>
+							</div>
+							<div id="rv-loader" class="loader-overlay">
+								<div class="spinner"></div>
+								<p id="rv-loader-text">Loading AI model...</p>
+							</div>
+							<div class="fps-counter"><span id="rv-fps">0</span> FPS</div>
+						</div>
+
+						<!-- Controls -->
+						<div class="demo-controls">
+							<button id="rv-toggle-btn" class="btn-demo btn-primary">▶️ Start Monitoring</button>
+							<button id="rv-test-btn" class="btn-demo btn-secondary">⚡ Test</button>
+						</div>
+
+						<!-- Stats row -->
+						<div class="rv-stats">
+							<div class="rv-stat-card" style="border-color: var(--coral)">
+								<div class="rv-stat-value" id="rv-stat-count">0</div>
+								<div class="rv-stat-label">BUSTED BY REACHY</div>
+							</div>
+							<div class="rv-stat-card" style="border-color: var(--sky)">
+								<div class="rv-stat-value" id="rv-stat-streak">0s</div>
+								<div class="rv-stat-label">CURRENT STREAK</div>
+							</div>
+							<div class="rv-stat-card" style="border-color: var(--lavender)">
+								<div class="rv-stat-value" id="rv-stat-longest">0s</div>
+								<div class="rv-stat-label">LONGEST STREAK</div>
+							</div>
+						</div>
+
+						<!-- Reset (hidden until first bust) -->
+						<div id="rv-reset-section" style="display:none">
+							<button id="rv-reset-btn" class="btn-demo btn-secondary" style="width:100%">🔄 Reset Stats</button>
+						</div>
+
+						<div class="response-box">
+							<div class="response-label">💬 Latest response:</div>
+							<div id="rv-response-text" class="response-text">Start monitoring to begin</div>
+						</div>
+					</div>
+
+					<!-- Right column: personality panel -->
+					<div class="rv-control-col">
+						<div class="rv-personality-panel" id="rv-personality-panel">
+							<h2 class="rv-panel-title">🤖 Robot Personality</h2>
+							<p class="rv-panel-subtitle">Choose how the robot judges you</p>
+
+							<!-- Mobile-only collapse toggle -->
+							<button class="rv-personality-toggle" id="rv-personality-toggle">
+								<span class="rv-personality-toggle-hint">Choose Personality</span>
+								<span id="rv-personality-toggle-label">🤖 Pure Reachy</span>
+								<span class="rv-personality-chevron">▼</span>
+							</button>
+
+							<div class="rv-personality-collapsible" id="rv-personality-collapsible">
+							<div id="rv-api-notice" class="rv-api-notice">
+								<div class="notice-icon">💡</div>
+								<div>
+									<strong>Using Pre-written Lines</strong><br>
+									<span class="notice-small">Add Groq API key in ⚙️ settings for AI responses</span>
+								</div>
+							</div>
+
+							<div id="rv-personalities" class="rv-personality-list"></div>
+							</div><!-- end rv-personality-collapsible -->
+						</div>
+					</div>
+				</div>
+
+				<!-- Settings modal -->
+				<div id="rv-settings-modal" class="modal-backdrop" style="display:none">
+					<div class="modal-box">
+						<div class="modal-header">
+							<h3>⚙️ Settings</h3>
+							<button class="modal-close" id="rv-settings-close">✕</button>
+						</div>
+						<div class="modal-body">
+							<label class="modal-label">Groq API Key (optional)</label>
+							<input id="rv-set-groq" type="password" class="modal-input" placeholder="gsk_...">
+							<p class="modal-hint">Free at <a href="https://console.groq.com" target="_blank">console.groq.com</a> — enables dynamic LLM responses</p>
+
+							<label class="modal-label">ElevenLabs API Key (optional)</label>
+							<input id="rv-set-eleven" type="password" class="modal-input" placeholder="sk_...">
+							<p class="modal-hint">Free tier at <a href="https://elevenlabs.io" target="_blank">elevenlabs.io</a> — premium voices</p>
+
+							<label class="modal-label">Cooldown between shames: <span id="rv-set-cooldown-val">10s</span></label>
+							<input id="rv-set-cooldown" type="range" min="10" max="120" value="10" step="5" class="modal-range">
+
+							<label class="modal-checkbox-label">
+								<input id="rv-set-praise" type="checkbox" checked> Praise when phone is put down
+							</label>
+						</div>
+						<div class="modal-footer">
+							<button id="rv-settings-save" class="cta-button">✓ Done</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Voice modal (per-personality) -->
+				<div id="rv-voices-modal" class="modal-backdrop" style="display:none">
+					<div class="modal-box">
+						<div class="modal-header">
+							<h3 id="rv-voice-modal-title">Voice Settings</h3>
+							<button class="modal-close" id="rv-voices-close">✕</button>
+						</div>
+						<div class="modal-body">
+							<label class="modal-label">ElevenLabs Voice ID</label>
+							<input id="rv-voice-eleven" type="text" class="modal-input" placeholder="Leave empty for default">
+							<p class="modal-hint" id="rv-voice-eleven-hint"></p>
+
+							<label class="modal-label">Web Speech Voice Name</label>
+							<input id="rv-voice-edge" type="text" class="modal-input" placeholder="Leave empty for default">
+							<p class="modal-hint" id="rv-voice-edge-hint"></p>
+						</div>
+						<div class="modal-footer">
+							<button id="rv-voices-save" class="cta-button">✓ Save</button>
+						</div>
+					</div>
+				</div>
+
+			</div><!-- end rv-monitoring -->
+		</div><!-- end rv-container -->
+	</div><!-- end robot-view -->
+
+	<!-- Demo JavaScript -->
+	<script type="module" src="demo.js"></script>
+	<script type="module" src="port_hf.js"></script>
+</body>
+
+</html>
