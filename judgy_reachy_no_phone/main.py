@@ -15,6 +15,13 @@ import os
 import cv2
 import numpy as np
 
+try:
+    import gstreamer_libs
+
+    gstreamer_libs.setup_python_environment()
+except ImportError:
+    pass
+
 from reachy_mini import ReachyMini, ReachyMiniApp
 from reachy_mini.utils import create_head_pose
 from pydantic import BaseModel
@@ -41,12 +48,23 @@ def _get_status_value(status, key: str, default=None):
     return getattr(status, key, default)
 
 
+def _env_flag(name: str) -> bool:
+    return os.getenv(name, "").lower() in ("1", "true", "yes")
+
+
+def _default_media_backend() -> str:
+    # The local/simulation path uses OpenCV for camera input, so avoid the
+    # SDK's GStreamer/WebRTC media stack unless robot media is requested.
+    fallback = "default" if _env_flag("JUDGY_USE_ROBOT_MEDIA") else "no_media"
+    return os.getenv("JUDGY_MEDIA_BACKEND", fallback)
+
+
 class JudgyReachyNoPhone(ReachyMiniApp):
     """Judgy Reachy No Phone - Get off your phone! 📱🤖"""
 
     custom_app_url: str | None = "http://0.0.0.0:8042"
     dont_start_webserver: bool = False
-    request_media_backend: str | None = os.getenv("JUDGY_MEDIA_BACKEND", "default")
+    request_media_backend: str | None = _default_media_backend()
 
     def __init__(self):
         super().__init__()
@@ -430,7 +448,8 @@ class JudgyReachyNoPhone(ReachyMiniApp):
         is_simulation = _get_status_value(status, "simulation_enabled", False)
         use_local_webcam = (
             is_simulation
-            or os.getenv("JUDGY_USE_LOCAL_WEBCAM", "").lower() in ("1", "true", "yes")
+            or self.media_backend == "no_media"
+            or _env_flag("JUDGY_USE_LOCAL_WEBCAM")
         )
         webcam = None
 

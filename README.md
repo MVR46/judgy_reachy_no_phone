@@ -476,6 +476,13 @@ See [Reachy Mini Quickstart](https://github.com/pollen-robotics/reachy_mini/blob
 # App auto-detects simulation mode and uses appropriate camera:
 # - Simulation: Laptop webcam
 # - Real robot: Robot's camera
+python -m judgy_reachy_no_phone.main
+
+# To use the robot media stack instead of the laptop webcam:
+JUDGY_USE_ROBOT_MEDIA=1 python -m judgy_reachy_no_phone.main
+
+# Or explicitly choose any Reachy SDK media backend:
+JUDGY_MEDIA_BACKEND=default python -m judgy_reachy_no_phone.main
 ```
 
 ### 3. Access Web UI
